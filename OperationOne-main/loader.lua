@@ -1,5 +1,5 @@
 local flag_name = "DebugRunParallelLuaOnMainThread"
-local main_url = "https://github.com/buhayhayahay332-lang/Test-mode-son/raw/refs/heads/main/OperationOne-main/main.lua"
+local main_url = "https://github.com/PLU3t0/Meathead/raw/refs/heads/main/OperationOne-main/main.lua"
 local rejoin_msg = "REJOIN THE GAME FUCK FURRY."
 
 local players = game:GetService("Players")
