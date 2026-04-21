@@ -1,6 +1,8 @@
 local flag_name = "DebugRunParallelLuaOnMainThread"
 local main_url = "https://github.com/PLU3t0/Meathead/raw/refs/heads/main/OperationOne-main/main.lua"
 local rejoin_msg = "REJOIN THE GAME FUCK FURRY."
+local max_attempts = 3
+local retry_delay = 1
 
 local players = game:GetService("Players")
 local local_player = players.LocalPlayer
@@ -60,7 +62,7 @@ local function notify_not_supported(exec_name)
 
     if not lib then
         local ok_http, src = pcall(function()
-            return game:HttpGet("https://github.com/buhayhayahay332-lang/Test-mode-son/raw/refs/heads/main/OperationOne-main/ui_lib.lua")
+            return game:HttpGet("https://github.com/PLU3t0/Meathead/raw/refs/heads/main/OperationOne-main/ui_lib.lua")
         end)
         if ok_http and type(src) == "string" and src ~= "" then
             lib = load_ui_from_source(src, "url:ui_lib.lua")
@@ -135,24 +137,52 @@ local function fetch_source(link)
     end)
 
     if not ok or type(src) ~= "string" or src == "" then
-        return nil
+        return nil, "failed to fetch source from " .. tostring(link)
     end
 
-    return src
+    return src, nil
 end
 
 local function compile_src(src)
     local compile = loadstring
     if type(compile) ~= "function" then
-        return nil
+        return nil, "loadstring unavailable"
     end
 
     local ok, chunk = pcall(compile, src, "@operationone_main")
     if not ok or type(chunk) ~= "function" then
-        return nil
+        return nil, "failed to compile main source"
     end
 
-    return chunk
+    return chunk, nil
+end
+
+local function run_main_with_retry(link)
+    local last_err = nil
+
+    for attempt = 1, max_attempts do
+        local src, fetch_err = fetch_source(link)
+        if src then
+            local chunk, compile_err = compile_src(src)
+            if chunk then
+                local ok_run, run_err = pcall(chunk)
+                if ok_run then
+                    return true
+                end
+                last_err = "runtime error: " .. tostring(run_err)
+            else
+                last_err = compile_err
+            end
+        else
+            last_err = fetch_err
+        end
+
+        if attempt < max_attempts then
+            task.wait(retry_delay)
+        end
+    end
+
+    error("loader failed after " .. tostring(max_attempts) .. " attempts: " .. tostring(last_err))
 end
 
 local function get_actor()
@@ -182,25 +212,42 @@ end
 
 local function build_actor_code(link)
     return string.format([[
-local ok_src, src = pcall(function()
-    return game:HttpGet(%q)
-end)
-if not ok_src or type(src) ~= "string" or src == "" then
-    return
+local max_attempts = %d
+local retry_delay = %s
+local last_err = nil
+
+for attempt = 1, max_attempts do
+    local ok_src, src = pcall(function()
+        return game:HttpGet(%q)
+    end)
+
+    if ok_src and type(src) == "string" and src ~= "" then
+        local compile = loadstring
+        if type(compile) ~= "function" then
+            last_err = "loadstring unavailable"
+        else
+            local ok_chunk, chunk = pcall(compile, src, "@operationone_main")
+            if ok_chunk and type(chunk) == "function" then
+                local ok_run, run_err = pcall(chunk)
+                if ok_run then
+                    return
+                end
+                last_err = "runtime error: " .. tostring(run_err)
+            else
+                last_err = "failed to compile main source"
+            end
+        end
+    else
+        last_err = "failed to fetch source from " .. tostring(%q)
+    end
+
+    if attempt < max_attempts then
+        task.wait(retry_delay)
+    end
 end
 
-local compile = loadstring
-if type(compile) ~= "function" then
-    return
-end
-
-local ok_chunk, chunk = pcall(compile, src, "@operationone_main")
-if not ok_chunk or type(chunk) ~= "function" then
-    return
-end
-
-pcall(chunk)
-]], link)
+error("loader actor failed after " .. tostring(max_attempts) .. " attempts: " .. tostring(last_err))
+]], max_attempts, tostring(retry_delay), link, link)
 end
 
 local function run_main_on_actor(actor, link)
@@ -230,13 +277,4 @@ if not is_flag_on(read_flag(flag_name)) then
     return
 end
 
-local src = fetch_source(main_url)
-if not src then
-    return
-end
-
-local chunk = compile_src(src)
-if not chunk then
-    return
-end
-pcall(chunk)
+run_main_with_retry(main_url)
