@@ -14,6 +14,8 @@ local Module = {
     _smoothness = 1,
     _fovRadius = 60,
     _fovRadiusSq = 60 * 60,
+    _visibleCheck = false,
+    _showFovCircle = true,
     _renderConn = nil,
     _fovCircle = nil,
     _viewmodelsFolder = nil,
@@ -120,6 +122,10 @@ function Module:_checkPart(part, mousePos, closestPart, closestDistSq)
         return closestPart, closestDistSq
     end
 
+    if self._visibleCheck and self:_isWallBlocked(part) then
+        return closestPart, closestDistSq
+    end
+
     local camera = Workspace.CurrentCamera
     if not camera then
         return closestPart, closestDistSq
@@ -169,6 +175,76 @@ function Module:_getGadgetTargetPart(model)
     end
 
     return model:FindFirstChild(partName)
+end
+
+function Module:_isWallBlocked(targetPart)
+    local camera = Workspace.CurrentCamera
+    if not camera then
+        return false
+    end
+
+    if not self._viewmodelsFolder or not self._viewmodelsFolder.Parent then
+        self._viewmodelsFolder = Workspace:FindFirstChild("Viewmodels")
+    end
+
+    local origin = camera.CFrame.Position
+    local direction = targetPart.Position - origin
+    if direction.Magnitude <= 0 then
+        return false
+    end
+
+    local extraIgnore = {}
+    local currentOrigin = origin
+    local remaining = direction
+    local stepDir = direction.Unit
+
+    for _ = 1, 12 do
+        local blacklist = { camera }
+        local viewmodelsFolder = self._viewmodelsFolder
+        if viewmodelsFolder then
+            local localViewmodel = viewmodelsFolder:FindFirstChild("LocalViewmodel")
+            if localViewmodel then
+                table.insert(blacklist, localViewmodel)
+            end
+        end
+
+        for _, inst in ipairs(extraIgnore) do
+            table.insert(blacklist, inst)
+        end
+
+        local params = RaycastParams.new()
+        params.FilterType = Enum.RaycastFilterType.Exclude
+        params.FilterDescendantsInstances = blacklist
+        params.IgnoreWater = true
+
+        local hit = Workspace:Raycast(currentOrigin, remaining, params)
+        if not hit then
+            return false
+        end
+
+        local instance = hit.Instance
+        if not instance then
+            return false
+        end
+
+        if instance == targetPart or instance:IsDescendantOf(targetPart.Parent) then
+            return false
+        end
+
+        if instance:IsA("BasePart") and instance.Transparency > 0 then
+            table.insert(extraIgnore, instance)
+            local nextOrigin = hit.Position + stepDir * 0.05
+            remaining = targetPart.Position - nextOrigin
+            if remaining.Magnitude <= 0.05 then
+                return false
+            end
+            currentOrigin = nextOrigin
+        else
+            return true
+        end
+    end
+
+    return true
 end
 
 function Module:_getClosestTargetToCursor()
@@ -270,7 +346,7 @@ function Module:_updateFovCircle()
         return
     end
 
-    self._fovCircle.Visible = self._enabled
+    self._fovCircle.Visible = self._enabled and self._showFovCircle
     self._fovCircle.Radius = self._fovRadius
     self._fovCircle.Position = self:_getMousePosition()
 end
@@ -474,6 +550,17 @@ end
 
 function Module:setTeamCheck(state)
     self._teamCheck = state == true
+    return true
+end
+
+function Module:setVisibleCheck(state)
+    self._visibleCheck = state == true
+    return true
+end
+
+function Module:setFovCircleVisible(state)
+    self._showFovCircle = state == true
+    self:_updateFovCircle()
     return true
 end
 

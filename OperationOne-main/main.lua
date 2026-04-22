@@ -240,6 +240,22 @@ local function setSilentAimTargetGadgets(state)
     end)
 end
 
+local function setSilentAimVisibleCheck(state)
+    withModule("silent_aim", function(m)
+        if type(m.setVisibleCheck) == "function" then
+            m:setVisibleCheck(state)
+        end
+    end)
+end
+
+local function setSilentAimFovCircleVisual(state)
+    withModule("silent_aim", function(m)
+        if type(m.setFovCircleVisible) == "function" then
+            m:setFovCircleVisible(state)
+        end
+    end)
+end
+
 local function setGunModEnabled(state)
     withModule("gun_modification", function(m)
         if type(m.setEnabled) == "function" then
@@ -667,6 +683,8 @@ local function applyDefaults()
     setAimAssistActivation("mb2")
     setSilentAimTargetMode("custom_parts")
     setSilentAimTargetGadgets(false)
+    setSilentAimVisibleCheck(false)
+    setSilentAimFovCircleVisual(true)
 
     setGunModEnabled(false)
     setGunModConfig("recoil_reduction", 0)
@@ -845,6 +863,8 @@ local function buildAkUi(lib)
     window:addSection("Aimbot")
     window:addToggle("Silent/Aimbot", false, setSilentAim)
     window:addToggle("Aim Team Check", true, setSilentAimTeamCheck)
+    window:addToggle("Aim Visible Check", false, setSilentAimVisibleCheck)
+    window:addToggle("FOV Circle Visual", true, setSilentAimFovCircleVisual)
     window:addSlider("Aim FOV", 10, 400, 60, 1, setSilentAimFov)
     window:addSlider("Aim Assist Smoothness", 0.01, 1, 1, 0.01, setSilentAimSmoothness)
     window:addDropdown("Aim Mode", { "silent", "aim_assist" }, "silent", function(selected)
