@@ -1,6 +1,7 @@
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
+local Players = game:GetService("Players")
 
 local Module = {
     shared = nil,
@@ -16,6 +17,7 @@ local Module = {
     _fovRadiusSq = 60 * 60,
     _visibleCheck = false,
     _showFovCircle = true,
+    _mobileScopeButton = nil,
     _renderConn = nil,
     _fovCircle = nil,
     _viewmodelsFolder = nil,
@@ -100,21 +102,52 @@ function Module:setShared(shared)
         RunService = ref(game:GetService("RunService"))
         UserInputService = ref(game:GetService("UserInputService"))
         Workspace = ref(game:GetService("Workspace"))
+        Players = ref(game:GetService("Players"))
     end
 
     return true
 end
 
 function Module:_getMousePosition()
-    if UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
-        local camera = Workspace.CurrentCamera
-        if camera then
-            return Vector2.new(camera.ViewportSize.X * 0.5, camera.ViewportSize.Y * 0.5)
-        end
+    local camera = Workspace.CurrentCamera
+    if not camera then
+        return Vector2.new(0, 0)
+    end
+    return Vector2.new(camera.ViewportSize.X * 0.5, camera.ViewportSize.Y * 0.5)
+end
+
+function Module:_getMobileScopeButton()
+    local cached = self._mobileScopeButton
+    if cached and cached.Parent then
+        return cached
     end
 
-    local pos = UserInputService:GetMouseLocation()
-    return Vector2.new(pos.X, pos.Y)
+    local localPlayer = Players and Players.LocalPlayer
+    local playerGui = localPlayer and localPlayer:FindFirstChild("PlayerGui")
+    local gameGui = playerGui and playerGui:FindFirstChild("Game")
+    local right = gameGui and gameGui:FindFirstChild("Right")
+    local center = right and right:FindFirstChild("Center")
+    local scopeButton = center and center:FindFirstChild("ScopeButton")
+    if scopeButton and scopeButton:IsA("GuiButton") then
+        self._mobileScopeButton = scopeButton
+        return scopeButton
+    end
+
+    return nil
+end
+
+function Module:_isMobileScopePressed()
+    if type(gethiddenproperty) ~= "function" then
+        return false
+    end
+
+    local scopeButton = self:_getMobileScopeButton()
+    if not scopeButton then
+        return false
+    end
+
+    local ok, guiState = pcall(gethiddenproperty, scopeButton, "GuiState")
+    return ok and guiState and guiState.Name == "Press" or false
 end
 
 function Module:_checkPart(part, mousePos, closestPart, closestDistSq)
@@ -298,6 +331,10 @@ end
 function Module:_isAimAssistInputActive()
     if self._aimAssistActivation == "always" then
         return true
+    end
+
+    if self._aimAssistActivation == "mobile" then
+        return self:_isMobileScopePressed()
     end
 
     if UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
@@ -525,7 +562,7 @@ end
 
 function Module:setAimAssistActivation(mode)
     local m = toLower(mode)
-    if m ~= "mb1" and m ~= "mb2" and m ~= "always" then
+    if m ~= "mb1" and m ~= "mb2" and m ~= "always" and m ~= "mobile" then
         return false, "invalid activation"
     end
 
@@ -566,6 +603,7 @@ end
 
 function Module:unload()
     self._enabled = false
+    self._mobileScopeButton = nil
 
     if self._renderConn then
         self._renderConn:Disconnect()
