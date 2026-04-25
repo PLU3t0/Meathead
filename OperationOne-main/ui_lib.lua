@@ -1,22 +1,23 @@
-local pl = game:GetService("Players")
-local ui = game:GetService("UserInputService")
-local tw = game:GetService("TweenService")
-local ss = game:GetService("SoundService")
-local db = game:GetService("Debris")
-local hs = game:GetService("HttpService")
+local pl  = cloneref(game:GetService("Players"))
+local ui  = cloneref(game:GetService("UserInputService"))
+local tw  = cloneref(game:GetService("TweenService"))
+local ss  = cloneref(game:GetService("SoundService"))
+local db  = cloneref(game:GetService("Debris"))
+local hs  = cloneref(game:GetService("HttpService"))
+local cg  = cloneref(game:GetService("CoreGui"))
 local lp = pl.LocalPlayer
-local cg = game:GetService("CoreGui")
 
-local guiParent = cg
+
+local guiParent = (gethui and gethui()) or cg
 do
-	local ok = pcall(function()
-		local sg = Instance.new("ScreenGui")
-		sg.Parent = cg
-		sg:Destroy()
-	end)
-	if not ok then
-		guiParent = lp:WaitForChild("PlayerGui")
-	end
+    local ok = pcall(function()
+        local sg = Instance.new("ScreenGui")
+        sg.Parent = cg
+        sg:Destroy()
+    end)
+    if not ok then
+        guiParent = lp:WaitForChild("PlayerGui")
+    end
 end
 
 local notifQueue = {}
@@ -25,7 +26,10 @@ local notifBaseY = 200
 
 local guiCounter = 0
 local activeInstances = {}
-local CONFIG_ROOT_FOLDER = "AKConfigs"
+local CONFIG_ROOT_FOLDER = "ASTROConfigs"
+local LOADING_GUI_NAME = "ASTRO_LOADING_GUI"
+local UI_BRAND_NAME = "FURRY.KILER"
+local LOADING_STATUS_TEXT = "Waiting for initialized for ASTRO.WTF, please wait..."
 
 local LibClass = {}
 LibClass.__index = LibClass
@@ -126,6 +130,85 @@ local function addCorner(parent, radius)
 	return c
 end
 
+local function showLoadingOverlay(message)
+	local existing = guiParent:FindFirstChild(LOADING_GUI_NAME)
+	if existing then
+		existing:Destroy()
+	end
+
+	local loadingGui = make("ScreenGui", {
+		Name = LOADING_GUI_NAME,
+		ResetOnSpawn = false,
+		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+		DisplayOrder = 2147483647,
+		Parent = guiParent,
+	})
+
+	local card = make("Frame", {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.new(0, 360, 0, 92),
+		BackgroundColor3 = Color3.fromRGB(12, 12, 12),
+		BackgroundTransparency = 0.15,
+		BorderSizePixel = 0,
+		Parent = loadingGui,
+	})
+	addCorner(card, 12)
+	make("UIStroke", {
+		Color = Color3.fromRGB(65, 65, 65),
+		Thickness = 1,
+		Parent = card,
+	})
+
+	make("TextLabel", {
+		BackgroundTransparency = 1,
+		Position = UDim2.new(0, 16, 0, 16),
+		Size = UDim2.new(1, -32, 0, 20),
+		Text = UI_BRAND_NAME,
+		TextColor3 = Color3.fromRGB(255, 255, 255),
+		TextSize = 14,
+		Font = Enum.Font.GothamBold,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		Parent = card,
+	})
+
+	local statusLabel = make("TextLabel", {
+		BackgroundTransparency = 1,
+		Position = UDim2.new(0, 16, 0, 42),
+		Size = UDim2.new(1, -32, 0, 34),
+		Text = message or LOADING_STATUS_TEXT,
+		TextColor3 = Color3.fromRGB(205, 205, 205),
+		TextSize = 12,
+		Font = Enum.Font.Gotham,
+		TextWrapped = true,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextYAlignment = Enum.TextYAlignment.Top,
+		Parent = card,
+	})
+
+	pcall(function()
+		if syn and syn.protect_gui then
+			syn.protect_gui(loadingGui)
+		elseif protect_gui then
+			protect_gui(loadingGui)
+		end
+	end)
+
+	return {
+		gui = loadingGui,
+		setText = function(text)
+			if statusLabel and statusLabel.Parent then
+				statusLabel.Text = tostring(text or LOADING_STATUS_TEXT)
+			end
+		end,
+		dismiss = function()
+			if loadingGui and loadingGui.Parent then
+				loadingGui:Destroy()
+			end
+		end,
+	}
+end
+
 local function tween(obj, goals, duration, style, direction)
 	local info = TweenInfo.new(
 		duration or 0.25,
@@ -212,15 +295,24 @@ local function sendNotif(title, subtitle, imageId, persistent)
 		nd.fh = fh
 		nd.fw = fw
 
-		local notifGui = guiParent:FindFirstChild("AK_NOTIF_GUI")
-		if not notifGui then
+		local notifGui = guiParent:FindFirstChild("ASTRO_NOTIF_GUI")
+				if not notifGui then
 			notifGui = make("ScreenGui", {
-				Name = "AK_NOTIF_GUI",
+				Name = "ASTRO_NOTIF_GUI",
 				ResetOnSpawn = false,
 				ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
 				Parent = guiParent,
 			})
+
+			pcall(function()
+				if syn and syn.protect_gui then
+					syn.protect_gui(notifGui)
+				elseif protect_gui then
+					protect_gui(notifGui)
+				end
+			end)
 		end
+
 
 		if nd._dismissed then return end
 
@@ -247,7 +339,7 @@ local function sendNotif(title, subtitle, imageId, persistent)
 			Size = UDim2.new(1, -12, 0, 16),
 			Position = UDim2.new(0, 10, 0, 8),
 			BackgroundTransparency = 1,
-			Text = title and ("FURRY KILLER  -  " .. title) or "FURRY KILLER",
+			Text = title and (UI_BRAND_NAME .. "  -  " .. title) or UI_BRAND_NAME,
 			TextColor3 = Color3.fromRGB(180, 180, 180),
 			TextSize = 11,
 			Font = Enum.Font.GothamBold,
@@ -340,6 +432,7 @@ end
 
 function LibClass.new(title, hideKey)
 	local self = setmetatable({}, LibClass)
+	self._loadingOverlay = showLoadingOverlay()
 	self._conns = {}
 	self._closed = false
 	self._listening = false
@@ -375,6 +468,10 @@ function LibClass.new(title, hideKey)
 	self._conn = conn
 
 	local function disconnectAll()
+		if self._loadingOverlay then
+			self._loadingOverlay.dismiss()
+			self._loadingOverlay = nil
+		end
 		for _, c in ipairs(self._conns) do
 			if c and c.Connected then
 				c:Disconnect()
@@ -409,7 +506,7 @@ function LibClass.new(title, hideKey)
 	table.insert(activeInstances[titleKey], self)
 
 	guiCounter = guiCounter + 1
-	local guiName = "AK_ADMIN_LIB_" .. guiCounter .. "_" .. hs:GenerateGUID(false):gsub("-", ""):sub(1, 12)
+	local guiName = "ASTRO_ADMIN_LIB_" .. guiCounter .. "_" .. hs:GenerateGUID(false):gsub("-", ""):sub(1, 12)
 
 	self.screenGui = make("ScreenGui", {
 		Name = guiName,
@@ -417,6 +514,14 @@ function LibClass.new(title, hideKey)
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
 		Parent = guiParent,
 	})
+
+		pcall(function()
+		if syn and syn.protect_gui then
+			syn.protect_gui(self.screenGui)
+		elseif protect_gui then
+			protect_gui(self.screenGui)
+		end
+	end)
 
 	self.mainFrame = make("Frame", {
 		Size = UDim2.new(0, 300, 0, 40),
@@ -444,7 +549,7 @@ function LibClass.new(title, hideKey)
 		Size = UDim2.new(1, -80, 1, 0),
 		Position = UDim2.new(0, 14, 0, 0),
 		BackgroundTransparency = 1,
-		Text = "FURRY KILLER" .. (title and ("  -  " .. title) or ""),
+		Text = UI_BRAND_NAME .. (title and ("  -  " .. title) or ""),
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 		TextSize = 13,
 		Font = Enum.Font.GothamBold,
@@ -726,6 +831,10 @@ function LibClass.new(title, hideKey)
 	end)
 
 	self:_updateScroll()
+	if self._loadingOverlay then
+		self._loadingOverlay.dismiss()
+		self._loadingOverlay = nil
+	end
 	return self
 end
 
@@ -2934,5 +3043,7 @@ function LibClass:notify(title, subtitle, imageId, persistent)
 	local nd = sendNotif(title, subtitle, imageId, persistent)
 	return nd
 end
+
+LibClass.showLoadingOverlay = showLoadingOverlay
 
 return LibClass
