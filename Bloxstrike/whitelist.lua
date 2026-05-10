@@ -7,4 +7,5 @@ return {
   "Seliware",
   "Matcha",
   "Solara",
+  "Delta",
 };
