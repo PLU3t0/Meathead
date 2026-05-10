@@ -3,7 +3,7 @@ return {
   "Ronix",
   "Volt",
   "Potassium",
-  "Sypnase Z,
+  "Synapse Z",
   "Seliware",
   "Matcha",
 };
