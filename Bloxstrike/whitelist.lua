@@ -6,4 +6,5 @@ return {
   "Synapse Z",
   "Seliware",
   "Matcha",
+  "Solara",
 };
