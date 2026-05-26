@@ -1912,11 +1912,18 @@ function LibClass:addDropdown(name, options, default, callback)
 		return math.max(math.floor(dropBtn.AbsoluteSize.X + 0.5), 120)
 	end
 
-	local panel = make("Frame", {
+	local panel = make("ScrollingFrame", {
 		Size = UDim2.new(0, getPanelWidth(), 0, 0),
 		BackgroundColor3 = Color3.fromRGB(18, 18, 18),
 		BackgroundTransparency = 0.1,
 		BorderSizePixel = 0,
+		AutomaticCanvasSize = Enum.AutomaticSize.None,
+		CanvasSize = UDim2.new(0, 0, 0, 0),
+		ScrollBarThickness = 4,
+		ScrollingDirection = Enum.ScrollingDirection.Y,
+		VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar,
+		Active = true,
+		ClipsDescendants = true,
 		ZIndex = 30,
 		Visible = false,
 		Parent = self.screenGui,
@@ -1941,12 +1948,34 @@ function LibClass:addDropdown(name, options, default, callback)
 		Parent = panel,
 	})
 
+	local function refreshPanelMetrics()
+		if not panel.Parent then
+			return 0, true
+		end
+
+		local vp = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1920, 1080)
+		local ap = dropBtn.AbsolutePosition
+		local as = dropBtn.AbsoluteSize
+		local contentH = panelLayout.AbsoluteContentSize.Y + 8
+		local spaceBelow = math.max(vp.Y - (ap.Y + as.Y) - 10, 30)
+		local spaceAbove = math.max(ap.Y - 10, 30)
+		local openBelow = contentH <= spaceBelow or spaceBelow >= spaceAbove
+		local maxVisibleHeight = openBelow and spaceBelow or spaceAbove
+		local visibleHeight = math.min(contentH, math.max(maxVisibleHeight, 30))
+
+		panel.CanvasSize = UDim2.new(0, 0, 0, contentH)
+		panel.Size = UDim2.new(0, getPanelWidth(), 0, visibleHeight)
+		return visibleHeight, openBelow
+	end
+
+	local updatePanelPosition
+
 	self._conn(panelLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
 		if not panel.Parent then return end
-		local vp = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1920, 1080)
-		local contentH = panelLayout.AbsoluteContentSize.Y + 8
-		local maxH = vp.Y - panel.AbsolutePosition.Y - 10
-		panel.Size = UDim2.new(0, getPanelWidth(), 0, math.min(contentH, math.max(maxH, 30)))
+		refreshPanelMetrics()
+		if isOpen and updatePanelPosition then
+			updatePanelPosition()
+		end
 	end)
 
 	local optionConns = {}
@@ -1968,18 +1997,20 @@ function LibClass:addDropdown(name, options, default, callback)
 		end
 	end
 
-	local function updatePanelPosition()
+	updatePanelPosition = function()
 		local ap = dropBtn.AbsolutePosition
 		local as = dropBtn.AbsoluteSize
 		local vp = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1920, 1080)
 		local panelW = getPanelWidth()
-		local panelH = panel.AbsoluteSize.Y
+		local panelH, openBelow = refreshPanelMetrics()
 		local yBelow = ap.Y + as.Y + 2
 		local yAbove = ap.Y - panelH - 2
-		local finalY = (yBelow + panelH > vp.Y) and yAbove or yBelow
+		local finalY = openBelow and yBelow or yAbove
 		local maxX = math.max(vp.X - panelW - 4, 4)
 		local finalX = math.clamp(ap.X, 4, maxX)
-		panel.Size = UDim2.new(0, panelW, 0, panel.AbsoluteSize.Y)
+		local maxY = math.max(vp.Y - panelH - 4, 4)
+		finalY = math.clamp(finalY, 4, maxY)
+		panel.Size = UDim2.new(0, panelW, 0, panelH)
 		panel.Position = UDim2.new(0, finalX, 0, finalY)
 	end
 
@@ -2030,6 +2061,7 @@ function LibClass:addDropdown(name, options, default, callback)
 			closePanel()
 		else
 			isOpen = true
+			panel.CanvasPosition = Vector2.new(0, 0)
 			updatePanelPosition()
 			panel.Visible = true
 		end
@@ -2088,6 +2120,7 @@ function LibClass:addDropdown(name, options, default, callback)
 			for i, v in ipairs(currentOptions) do
 				buildOption(i, v)
 			end
+			refreshPanelMetrics()
 			if not hasOption(selected) then
 				setSelectedValue(currentOptions[1], false)
 			else
