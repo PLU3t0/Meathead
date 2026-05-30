@@ -367,9 +367,7 @@ return function(ctx, Modules)
         Default = "G",
         NoUI = true,
         Text = "Fly Key"
-    }):OnChanged(function(v)
-        Modules.RappelFly:SetFlyKey(v)
-    end)
+    })
     RF:AddSlider("rf_speed", {
         Text = "Fly Speed",
         Default = Modules.RappelFly.speed,
@@ -407,6 +405,12 @@ return function(ctx, Modules)
         SaveManager:SetIgnoreIndexes({"MenuKeybind", "rf_key"})
         SaveManager:SetFolder("obsfurr")
         SaveManager:BuildConfigSection(Tabs.UI)
+    end
+
+    if Options.rf_key and Options.rf_key.OnClick then
+        Options.rf_key:OnClick(function()
+            Modules.RappelFly:SetFlyKey(Options.rf_key.Value)
+        end)
     end
 
     Library.ToggleKeybind = Options.MenuKeybind
