@@ -363,6 +363,13 @@ return function(ctx, Modules)
     }):OnChanged(function(v)
         Modules.RappelFly:SetEnabled(v)
     end)
+    RF:AddLabel("Fly Key"):AddKeyPicker("rf_key", {
+        Default = "G",
+        NoUI = true,
+        Text = "Fly Key"
+    }):OnChanged(function(v)
+        Modules.RappelFly:SetFlyKey(v)
+    end)
     RF:AddSlider("rf_speed", {
         Text = "Fly Speed",
         Default = Modules.RappelFly.speed,
@@ -397,7 +404,7 @@ return function(ctx, Modules)
     if okSave then
         SaveManager:SetLibrary(Library)
         SaveManager:IgnoreThemeSettings()
-        SaveManager:SetIgnoreIndexes({"MenuKeybind"})
+        SaveManager:SetIgnoreIndexes({"MenuKeybind", "rf_key"})
         SaveManager:SetFolder("obsfurr")
         SaveManager:BuildConfigSection(Tabs.UI)
     end
