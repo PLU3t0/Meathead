@@ -393,6 +393,26 @@ return function(ctx, Modules)
         NoUI = true,
         Text = "Menu Keybind"
     })
+    UIG:AddToggle("ShowCustomCursor", {
+        Text = "Custom Cursor",
+        Default = true
+    }):OnChanged(function(v)
+        Library.ShowCustomCursor = v
+    end)
+    UIG:AddDropdown("DPIDropdown", {
+        Values = { "50%", "75%", "100%", "125%", "150%", "175%", "200%" },
+        Default = "100%",
+        Text = "DPI Scale",
+        Callback = function(value)
+            value = value:gsub("%%", "")
+            local dpi = tonumber(value)
+            if dpi then
+                Library:SetDPIScale(dpi)
+            end
+        end
+    })
+    UIG:AddDivider()
+    UIG:AddLabel("Use the controls above to tune the menu feel")
 
     if okTheme then
         ThemeManager:SetLibrary(Library)
@@ -402,7 +422,7 @@ return function(ctx, Modules)
     if okSave then
         SaveManager:SetLibrary(Library)
         SaveManager:IgnoreThemeSettings()
-        SaveManager:SetIgnoreIndexes({"MenuKeybind", "rf_key"})
+        SaveManager:SetIgnoreIndexes({"MenuKeybind", "rf_key", "DPIDropdown"})
         SaveManager:SetFolder("obsfurr")
         SaveManager:BuildConfigSection(Tabs.UI)
     end
