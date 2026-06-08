@@ -1,3 +1,4 @@
+-- just edit this and ill put it myself to the repo
 return function(ctx, Modules)
     local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 
@@ -287,6 +288,84 @@ return function(ctx, Modules)
             Modules.ESP:SetStickyColor(v)
         end
     })
+    ESPColors:AddLabel("Remote C4"):AddColorPicker("esp_rc4", {
+        Default = Modules.ESP.remoteC4Color,
+        Title = "Remote C4",
+        Callback = function(v)
+            Modules.ESP:SetRemoteC4Color(v)
+        end
+    })
+    ESPColors:AddLabel("Frag Grenade"):AddColorPicker("esp_fg", {
+        Default = Modules.ESP.fragGrenadeColor,
+        Title = "Frag Grenade",
+        Callback = function(v)
+            Modules.ESP:SetFragGrenadeColor(v)
+        end
+    })
+    ESPColors:AddLabel("Thermite"):AddColorPicker("esp_th", {
+        Default = Modules.ESP.thermiteColor,
+        Title = "Thermite Charge",
+        Callback = function(v)
+            Modules.ESP:SetThermiteColor(v)
+        end
+    })
+    ESPColors:AddLabel("Toxic"):AddColorPicker("esp_tx", {
+        Default = Modules.ESP.toxicColor,
+        Title = "Toxic Charge",
+        Callback = function(v)
+            Modules.ESP:SetToxicColor(v)
+        end
+    })
+
+    local ESPObjects = Tabs.Visuals:AddRightGroupbox("ESP Objects")
+    ESPObjects:AddToggle("esp_obj_drone", {
+        Text = "Drone",
+        Default = Modules.ESP.droneEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetDroneEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_claymore", {
+        Text = "Claymore",
+        Default = Modules.ESP.claymoreEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetClaymoreEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_prox", {
+        Text = "Proximity Alarm",
+        Default = Modules.ESP.proximityEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetProximityEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_sticky", {
+        Text = "Sticky Camera",
+        Default = Modules.ESP.stickyEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetStickyEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_rc4", {
+        Text = "Remote C4",
+        Default = Modules.ESP.remoteC4Enabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetRemoteC4Enabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_fg", {
+        Text = "Frag Grenade",
+        Default = Modules.ESP.fragGrenadeEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetFragGrenadeEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_th", {
+        Text = "Thermite Charge",
+        Default = Modules.ESP.thermiteEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetThermiteEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_tx", {
+        Text = "Toxic Charge",
+        Default = Modules.ESP.toxicEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetToxicEnabled(v)
+    end)
 
     local WR = Tabs.World:AddLeftGroupbox("World")
     WR:AddToggle("fb_en", {
