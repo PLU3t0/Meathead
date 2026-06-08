@@ -1,4 +1,3 @@
--- just edit this and ill put it myself to the repo
 return function(ctx, Modules)
     local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 
@@ -309,6 +308,48 @@ return function(ctx, Modules)
             Modules.ESP:SetToxicColor(v)
         end
     })
+    ESPColors:AddLabel("Hard Breacher"):AddColorPicker("esp_hb", {
+        Default = Modules.ESP.hardBreacherColor,
+        Title = "Hard Breacher",
+        Callback = function(v)
+            Modules.ESP:SetHardBreacherColor(v)
+        end
+    })
+    ESPColors:AddLabel("Shock Battery"):AddColorPicker("esp_sb", {
+        Default = Modules.ESP.shockBatteryColor,
+        Title = "Shock Battery",
+        Callback = function(v)
+            Modules.ESP:SetShockBatteryColor(v)
+        end
+    })
+    ESPColors:AddLabel("Deployable Shield"):AddColorPicker("esp_ds", {
+        Default = Modules.ESP.deployableShieldColor,
+        Title = "Deployable Shield",
+        Callback = function(v)
+            Modules.ESP:SetDeployableShieldColor(v)
+        end
+    })
+    ESPColors:AddLabel("Barbed Wire"):AddColorPicker("esp_bw", {
+        Default = Modules.ESP.barbedWireColor,
+        Title = "Barbed Wire",
+        Callback = function(v)
+            Modules.ESP:SetBarbedWireColor(v)
+        end
+    })
+    ESPColors:AddLabel("Signal Jammer"):AddColorPicker("esp_sj", {
+        Default = Modules.ESP.signalJammerColor,
+        Title = "Signal Jammer",
+        Callback = function(v)
+            Modules.ESP:SetSignalJammerColor(v)
+        end
+    })
+    ESPColors:AddLabel("Bullet Proof Camera"):AddColorPicker("esp_bpc", {
+        Default = Modules.ESP.bulletProofCameraColor,
+        Title = "Bullet Proof Camera",
+        Callback = function(v)
+            Modules.ESP:SetBulletProofCameraColor(v)
+        end
+    })
 
     local ESPObjects = Tabs.Visuals:AddRightGroupbox("ESP Objects")
     ESPObjects:AddToggle("esp_obj_drone", {
@@ -352,6 +393,42 @@ return function(ctx, Modules)
         Default = Modules.ESP.toxicEnabled
     }):OnChanged(function(v)
         Modules.ESP:SetToxicEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_hb", {
+        Text = "Hard Breacher",
+        Default = Modules.ESP.hardBreacherEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetHardBreacherEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_sb", {
+        Text = "Shock Battery",
+        Default = Modules.ESP.shockBatteryEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetShockBatteryEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_ds", {
+        Text = "Deployable Shield",
+        Default = Modules.ESP.deployableShieldEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetDeployableShieldEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_bw", {
+        Text = "Barbed Wire",
+        Default = Modules.ESP.barbedWireEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetBarbedWireEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_sj", {
+        Text = "Signal Jammer",
+        Default = Modules.ESP.signalJammerEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetSignalJammerEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_bpc", {
+        Text = "Bullet Proof Camera",
+        Default = Modules.ESP.bulletProofCameraEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetBulletProofCameraEnabled(v)
     end)
     ESPObjects:AddToggle("esp_obj_names", {
         Text = "Object Names",
