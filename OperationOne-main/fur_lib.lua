@@ -1,3 +1,4 @@
+-- just edit this and ill put it myself to the repo
 return function(ctx, Modules)
     local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 
@@ -294,13 +295,6 @@ return function(ctx, Modules)
             Modules.ESP:SetRemoteC4Color(v)
         end
     })
-    ESPColors:AddLabel("Frag Grenade"):AddColorPicker("esp_fg", {
-        Default = Modules.ESP.fragGrenadeColor,
-        Title = "Frag Grenade",
-        Callback = function(v)
-            Modules.ESP:SetFragGrenadeColor(v)
-        end
-    })
     ESPColors:AddLabel("Thermite"):AddColorPicker("esp_th", {
         Default = Modules.ESP.thermiteColor,
         Title = "Thermite Charge",
@@ -347,12 +341,6 @@ return function(ctx, Modules)
     }):OnChanged(function(v)
         Modules.ESP:SetRemoteC4Enabled(v)
     end)
-    ESPObjects:AddToggle("esp_obj_fg", {
-        Text = "Frag Grenade",
-        Default = Modules.ESP.fragGrenadeEnabled
-    }):OnChanged(function(v)
-        Modules.ESP:SetFragGrenadeEnabled(v)
-    end)
     ESPObjects:AddToggle("esp_obj_th", {
         Text = "Thermite Charge",
         Default = Modules.ESP.thermiteEnabled
@@ -364,6 +352,21 @@ return function(ctx, Modules)
         Default = Modules.ESP.toxicEnabled
     }):OnChanged(function(v)
         Modules.ESP:SetToxicEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_names", {
+        Text = "Object Names",
+        Default = Modules.ESP.objectNameEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetObjectNameEnabled(v)
+    end)
+    ESPObjects:AddSlider("esp_obj_name_size", {
+        Text = "Name Size",
+        Default = Modules.ESP.objectNameSize,
+        Min = 10,
+        Max = 28,
+        Rounding = 0
+    }):OnChanged(function(v)
+        Modules.ESP:SetObjectNameSize(v)
     end)
 
     local WR = Tabs.World:AddLeftGroupbox("World")
