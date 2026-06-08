@@ -308,11 +308,11 @@ return function(ctx, Modules)
             Modules.ESP:SetToxicColor(v)
         end
     })
-    ESPColors:AddLabel("Hard Breacher"):AddColorPicker("esp_hb", {
-        Default = Modules.ESP.hardBreacherColor,
-        Title = "Hard Breacher",
+    ESPColors:AddLabel("HardBreachCharge"):AddColorPicker("esp_hb", {
+        Default = Modules.ESP.hardBreachChargeColor,
+        Title = "HardBreachCharge",
         Callback = function(v)
-            Modules.ESP:SetHardBreacherColor(v)
+            Modules.ESP:SetHardBreachChargeColor(v)
         end
     })
     ESPColors:AddLabel("Shock Battery"):AddColorPicker("esp_sb", {
@@ -336,18 +336,25 @@ return function(ctx, Modules)
             Modules.ESP:SetBarbedWireColor(v)
         end
     })
-    ESPColors:AddLabel("Signal Jammer"):AddColorPicker("esp_sj", {
-        Default = Modules.ESP.signalJammerColor,
-        Title = "Signal Jammer",
+    ESPColors:AddLabel("SignalDisruptor"):AddColorPicker("esp_sj", {
+        Default = Modules.ESP.signalDisruptorColor,
+        Title = "SignalDisruptor",
         Callback = function(v)
-            Modules.ESP:SetSignalJammerColor(v)
+            Modules.ESP:SetSignalDisruptorColor(v)
         end
     })
-    ESPColors:AddLabel("Bullet Proof Camera"):AddColorPicker("esp_bpc", {
-        Default = Modules.ESP.bulletProofCameraColor,
-        Title = "Bullet Proof Camera",
+    ESPColors:AddLabel("BulletproofCamera"):AddColorPicker("esp_bpc", {
+        Default = Modules.ESP.bulletproofCameraColor,
+        Title = "BulletproofCamera",
         Callback = function(v)
-            Modules.ESP:SetBulletProofCameraColor(v)
+            Modules.ESP:SetBulletproofCameraColor(v)
+        end
+    })
+    ESPColors:AddLabel("BreachCharge"):AddColorPicker("esp_bc", {
+        Default = Modules.ESP.breachChargeColor,
+        Title = "BreachCharge",
+        Callback = function(v)
+            Modules.ESP:SetBreachChargeColor(v)
         end
     })
 
@@ -395,10 +402,10 @@ return function(ctx, Modules)
         Modules.ESP:SetToxicEnabled(v)
     end)
     ESPObjects:AddToggle("esp_obj_hb", {
-        Text = "Hard Breacher",
-        Default = Modules.ESP.hardBreacherEnabled
+        Text = "HardBreachCharge",
+        Default = Modules.ESP.hardBreachChargeEnabled
     }):OnChanged(function(v)
-        Modules.ESP:SetHardBreacherEnabled(v)
+        Modules.ESP:SetHardBreachChargeEnabled(v)
     end)
     ESPObjects:AddToggle("esp_obj_sb", {
         Text = "Shock Battery",
@@ -419,16 +426,22 @@ return function(ctx, Modules)
         Modules.ESP:SetBarbedWireEnabled(v)
     end)
     ESPObjects:AddToggle("esp_obj_sj", {
-        Text = "Signal Jammer",
-        Default = Modules.ESP.signalJammerEnabled
+        Text = "SignalDisruptor",
+        Default = Modules.ESP.signalDisruptorEnabled
     }):OnChanged(function(v)
-        Modules.ESP:SetSignalJammerEnabled(v)
+        Modules.ESP:SetSignalDisruptorEnabled(v)
     end)
     ESPObjects:AddToggle("esp_obj_bpc", {
-        Text = "Bullet Proof Camera",
-        Default = Modules.ESP.bulletProofCameraEnabled
+        Text = "BulletproofCamera",
+        Default = Modules.ESP.bulletproofCameraEnabled
     }):OnChanged(function(v)
-        Modules.ESP:SetBulletProofCameraEnabled(v)
+        Modules.ESP:SetBulletproofCameraEnabled(v)
+    end)
+    ESPObjects:AddToggle("esp_obj_bc", {
+        Text = "BreachCharge",
+        Default = Modules.ESP.breachChargeEnabled
+    }):OnChanged(function(v)
+        Modules.ESP:SetBreachChargeEnabled(v)
     end)
     ESPObjects:AddToggle("esp_obj_names", {
         Text = "Object Names",
