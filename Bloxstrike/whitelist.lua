@@ -8,4 +8,5 @@ return {
   "Matcha",
   "Solara",
   "Delta",
+  "MacSploit",
 };
