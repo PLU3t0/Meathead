@@ -16,7 +16,7 @@ local Players = cloneref(game:GetService("Players"));
 
 local BLOCKED_EXECUTORS = {
 	"xeno",
-	"velocity"
+	--"velocity"
 };
 
 local GetExecutorName do
