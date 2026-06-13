@@ -106,12 +106,14 @@ local PLACE_IDS = {
 	["AstroOp1"]       = 72920620366355;
 	["OperationOnev2"] = 72920620366355;
 	["Bloxstrike"]     = 114234929420007;
+	["TTK-TESTING]              = 120189115846709;
 };
 
 local SCRIPT_URLS = {
 	["AstroOp1"]       = "https://github.com/PLU3t0/Meathead/raw/refs/heads/main/OperationOne-main/loader.lua";
 	["OperationOnev2"] = "https://github.com/PLU3t0/Meathead/raw/refs/heads/main/OperationOne-main/v2.lua";
 	["Bloxstrike"]     = "https://github.com/PLU3t0/Meathead/raw/refs/heads/main/Bloxstrike/loader.lua";
+	["TTK-TESTING"]    = "https://github.com/PLU3t0/Meathead/raw/refs/heads/main/Ttk/ttk.luau";
 };
 
 local Window;
@@ -212,6 +214,10 @@ end);
 
 Window:addButton("Bloxstrike", function()
 	Execute("Bloxstrike");
+end);
+
+Window:addButton("TTK-TESTING", function()
+	Execute("TTK-TESTING");
 end);
 
 Window:notify(
