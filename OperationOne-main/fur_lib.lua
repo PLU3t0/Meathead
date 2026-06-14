@@ -534,14 +534,11 @@ return function(ctx, Modules)
     }):OnChanged(function(v)
         Modules.RappelFly:SetEnabled(v)
     end)
- RF:AddKeyPicker("rf_key", {
-    Default = "G",
-    NoUI = false,
-    Text = "Fly Key",
-    ChangedCallback = function(new)
-        Modules.RappelFly:SetFlyKey(new.Name)
-    end,
-})
+    RF:AddLabel("Fly Key"):AddKeyPicker("rf_key", {
+        Default = "G",
+        NoUI = true,
+        Text = "Fly Key"
+    })
     RF:AddSlider("rf_speed", {
         Text = "Fly Speed",
         Default = Modules.RappelFly.speed,
@@ -562,11 +559,11 @@ return function(ctx, Modules)
     end)
 
     local UIG = Tabs.UI:AddLeftGroupbox("Menu")
-UIG:AddKeyPicker("MenuKeybind", {
-    Default = "RightControl",
-    NoUI = false,
-    Text = "Menu Keybind",
-})
+    UIG:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
+        Default = "RightControl",
+        NoUI = true,
+        Text = "Menu Keybind"
+    })
     UIG:AddToggle("ShowCustomCursor", {
         Text = "Custom Cursor",
         Default = true
@@ -596,18 +593,16 @@ UIG:AddKeyPicker("MenuKeybind", {
     if okSave then
         SaveManager:SetLibrary(Library)
         SaveManager:IgnoreThemeSettings()
-       SaveManager:SetIgnoreIndexes({"MenuKeybind", "rf_key", "DPIDropdown"})
+        SaveManager:SetIgnoreIndexes({"MenuKeybind", "rf_key", "DPIDropdown"})
         SaveManager:SetFolder("obsfurr")
         SaveManager:BuildConfigSection(Tabs.UI)
     end
 
-  --[[  if Options.rf_key and Options.rf_key.OnClick then
+    if Options.rf_key and Options.rf_key.OnClick then
         Options.rf_key:OnClick(function()
             Modules.RappelFly:SetFlyKey(Options.rf_key.Value)
         end)
-    end]]
+    end
 
-   if okSave then
     Library.ToggleKeybind = Options.MenuKeybind
-end
 end
