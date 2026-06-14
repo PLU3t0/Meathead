@@ -534,9 +534,9 @@ return function(ctx, Modules)
     }):OnChanged(function(v)
         Modules.RappelFly:SetEnabled(v)
     end)
-   RF:AddLabel("Fly Key"):AddKeyPicker("rf_key", {
+ RF:AddKeyPicker("rf_key", {
     Default = "G",
-    NoUI = true,
+    NoUI = false,
     Text = "Fly Key",
     ChangedCallback = function(new)
         Modules.RappelFly:SetFlyKey(new.Name)
@@ -562,9 +562,9 @@ return function(ctx, Modules)
     end)
 
     local UIG = Tabs.UI:AddLeftGroupbox("Menu")
-  UIG:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
+UIG:AddKeyPicker("MenuKeybind", {
     Default = "RightControl",
-    NoUI = true,
+    NoUI = false,
     Text = "Menu Keybind",
 })
     UIG:AddToggle("ShowCustomCursor", {
