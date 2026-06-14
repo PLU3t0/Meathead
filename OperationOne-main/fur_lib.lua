@@ -596,7 +596,7 @@ return function(ctx, Modules)
     if okSave then
         SaveManager:SetLibrary(Library)
         SaveManager:IgnoreThemeSettings()
-       -- SaveManager:SetIgnoreIndexes({"MenuKeybind", "rf_key", "DPIDropdown"})
+        SaveManager:SetIgnoreIndexes({"MenuKeybind", "rf_key", "DPIDropdown"})
         SaveManager:SetFolder("obsfurr")
         SaveManager:BuildConfigSection(Tabs.UI)
     end
