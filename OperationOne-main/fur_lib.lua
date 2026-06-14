@@ -562,11 +562,11 @@ return function(ctx, Modules)
     end)
 
     local UIG = Tabs.UI:AddLeftGroupbox("Menu")
-    UIG:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
-        Default = "RightControl",
-        NoUI = true,
-        Text = "Menu Keybind"
-    })
+  UIG:AddKeyPicker("MenuKeybind", {
+    Default = "RightControl",
+    NoUI = true,
+    Text = "Menu Keybind"
+})
     UIG:AddToggle("ShowCustomCursor", {
         Text = "Custom Cursor",
         Default = true
