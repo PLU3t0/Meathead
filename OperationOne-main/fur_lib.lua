@@ -20,16 +20,15 @@ return function(ctx, Modules)
     local okSave, SaveManager = pcall(function()
         return loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
     end)
-
-    local Window = Library:CreateWindow({
-        Title = "FURRY MAN",
-        Footer = "FREE YENO",
-        Center = true,
-        AutoShow = true,
-        ShowCustomCursor = true,
-        NotifySide = "Right"
-    })
-
+local Window = Library:CreateWindow({
+    Title = "FURRY MAN",
+    Footer = "FREE YENO",
+    Center = true,
+    AutoShow = true,
+    ShowCustomCursor = true,
+    NotifySide = "Right",
+    ToggleKeybind = Enum.KeyCode.RightControl, 
+})
     local Tabs = {
         Combat = Window:AddTab("Combat"),
         Visuals = Window:AddTab("Visuals"),
@@ -562,11 +561,14 @@ return function(ctx, Modules)
     end)
 
     local UIG = Tabs.UI:AddLeftGroupbox("Menu")
-    UIG:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
-        Default = "RightControl",
-        NoUI = true,
-        Text = "Menu Keybind"
-    })
+   UIG:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
+    Default = "RightControl",
+    NoUI = true,
+    Text = "Menu Keybind",
+    ChangedCallback = function(new)
+        Library.ToggleKeybind = new 
+    end,
+})
     UIG:AddToggle("ShowCustomCursor", {
         Text = "Custom Cursor",
         Default = true
@@ -607,5 +609,5 @@ return function(ctx, Modules)
         end)
     end]]
 
-    Library.ToggleKeybind = Options.MenuKeybind
+  
 end
