@@ -562,10 +562,10 @@ return function(ctx, Modules)
     end)
 
     local UIG = Tabs.UI:AddLeftGroupbox("Menu")
-  UIG:AddKeyPicker("MenuKeybind", {
+  UIG:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
     Default = "RightControl",
     NoUI = true,
-    Text = "Menu Keybind"
+    Text = "Menu Keybind",
 })
     UIG:AddToggle("ShowCustomCursor", {
         Text = "Custom Cursor",
@@ -596,7 +596,7 @@ return function(ctx, Modules)
     if okSave then
         SaveManager:SetLibrary(Library)
         SaveManager:IgnoreThemeSettings()
-        SaveManager:SetIgnoreIndexes({"MenuKeybind", "rf_key", "DPIDropdown"})
+       SaveManager:SetIgnoreIndexes({"MenuKeybind", "rf_key", "DPIDropdown"})
         SaveManager:SetFolder("obsfurr")
         SaveManager:BuildConfigSection(Tabs.UI)
     end
@@ -607,5 +607,7 @@ return function(ctx, Modules)
         end)
     end]]
 
+   if okSave then
     Library.ToggleKeybind = Options.MenuKeybind
+end
 end
