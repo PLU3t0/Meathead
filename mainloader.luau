@@ -70,21 +70,21 @@ do
 end
 
 local LibClass = loadstring(game:HttpGet(
-	"https://github.com/PLU3t0/Meathead/raw/refs/heads/main/OperationOne-main/ui_lib.lua"
+	"https://raw.githubusercontent.com/PLU3t0/Meathead/main/OperationOne-main/ui_lib.lua"
 ))();
 
 local PLACE_IDS = {
 	["AstroOp1"]       = 72920620366355;
 	["OperationOnev2"] = 72920620366355;
 	["Bloxstrike"]     = 114234929420007;
-	["TTK-TESTING"]    = 120189115846709; -- fixed missing closing quote
+	["TTK-TESTING"]    = 120189115846709;
 };
 
 local SCRIPT_URLS = {
-	["AstroOp1"]       = "https://github.com/PLU3t0/Meathead/raw/refs/heads/main/OperationOne-main/loader.lua";
-	["OperationOnev2"] = "https://github.com/PLU3t0/Meathead/raw/refs/heads/main/OperationOne-main/v2.lua";
-	["Bloxstrike"]     = "https://github.com/PLU3t0/Meathead/raw/refs/heads/main/Bloxstrike/loader.lua";
-	["TTK-TESTING"]    = "https://github.com/PLU3t0/Meathead/raw/refs/heads/main/Ttk/ttk.luau";
+	["AstroOp1"]       = https://raw.githubusercontent.com/PLU3t0/Meathead/main/OperationOne-main/loader.lua";
+	["OperationOnev2"] = "https://raw.githubusercontent.com/PLU3t0/Meathead/main/OperationOne-main/v2.lua";
+	["Bloxstrike"]     = "https://raw.githubusercontent.com/PLU3t0/Meathead/main/Bloxstrike/loader.lua";
+	["TTK-TESTING"]    = "https://raw.githubusercontent.com/PLU3t0/Meathead/main/Ttk/ttk.luau";
 };
 
 local Window;
