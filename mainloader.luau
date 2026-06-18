@@ -22,18 +22,12 @@ local GetExecutorName do
 	GetExecutorName = function(): string?
 		if identifyexecutor then
 			local Success, Name = PCall(identifyexecutor);
-
-			if Success and Name then
-				return ToString(Name);
-			end
+			if Success and Name then return ToString(Name); end
 		end
 
 		if getexecutorname then
 			local Success, Name = PCall(getexecutorname);
-
-			if Success and Name then
-				return ToString(Name);
-			end
+			if Success and Name then return ToString(Name); end
 		end
 
 		if EXECUTOR_NAME then
@@ -48,34 +42,12 @@ local IsBlockedExecutor do
 	IsBlockedExecutor = function(): (boolean, string?)
 		local Name = GetExecutorName();
 
-		if not Name then
-			return false, nil;
-		end
+		if not Name then return false, nil; end
 
 		local LowerName = StringLower(Name);
 
 		for _, BlockedName in IPairs(BLOCKED_EXECUTORS) do
 			if StringFind(LowerName, BlockedName, 1, true) then
-				return true, Name;
-			end
-		end
-
-		return false, nil;
-	end;
-end
-
-local IsBlockedExecutor do
-	IsBlockedExecutor = function(): (boolean, string?)
-		local Name = GetExecutorName() or GetExecutorNameFromGlobals();
-
-		if not Name then
-			return false, nil;
-		end
-
-		local LowerName = Name:lower();
-
-		for _, BlockedName in IPairs(BLOCKED_EXECUTORS) do
-			if LowerName:find(BlockedName, 1, true) then
 				return true, Name;
 			end
 		end
@@ -93,7 +65,6 @@ do
 			.. ExecutorName
 			.. "\nPlease use a supported executor."
 		);
-
 		return;
 	end
 end
@@ -106,7 +77,7 @@ local PLACE_IDS = {
 	["AstroOp1"]       = 72920620366355;
 	["OperationOnev2"] = 72920620366355;
 	["Bloxstrike"]     = 114234929420007;
-	["TTK-TESTING]              = 120189115846709;
+	["TTK-TESTING"]    = 120189115846709; -- fixed missing closing quote
 };
 
 local SCRIPT_URLS = {
@@ -146,10 +117,8 @@ local Execute do
 					.. ". You are in "
 					.. ToString(CurrentPlaceId)
 					.. ".",
-				nil,
-				false
+				nil, false
 			);
-
 			return;
 		end
 
@@ -161,14 +130,9 @@ local Execute do
 		if not Success then
 			Window:notify(
 				"Load Error",
-				"Failed to load "
-					.. GameName
-					.. ": "
-					.. ToString(Result),
-				nil,
-				false
+				"Failed to load " .. GameName .. ": " .. ToString(Result),
+				nil, false
 			);
-
 			return;
 		end
 
@@ -177,22 +141,16 @@ local Execute do
 		if not Executed then
 			Window:notify(
 				"Script Error",
-				GameName
-					.. " errored: "
-					.. ToString(Error),
-				nil,
-				false
+				GameName .. " errored: " .. ToString(Error),
+				nil, false
 			);
-
 			return;
 		end
 
 		Window:notify(
 			"Success",
-			GameName
-				.. " loaded successfully, wait 1-5 seconds for the Gui",
-			nil,
-			false
+			GameName .. " loaded successfully, wait 1-5 seconds for the Gui",
+			nil, false
 		);
 
 		TaskDelay(1.5, CloseLoader);
@@ -204,25 +162,9 @@ Window = LibClass.new("Loader");
 Window:addTab("Games");
 Window:addSection("Select Game");
 
-Window:addButton("AstroOp1", function()
-	Execute("AstroOp1");
-end);
+Window:addButton("AstroOp1",        function() Execute("AstroOp1");       end);
+Window:addButton("OperationOne v2",  function() Execute("OperationOnev2"); end);
+Window:addButton("Bloxstrike",       function() Execute("Bloxstrike");     end);
+Window:addButton("TTK-TESTING",      function() Execute("TTK-TESTING");    end);
 
-Window:addButton("OperationOne v2", function()
-	Execute("OperationOnev2");
-end);
-
-Window:addButton("Bloxstrike", function()
-	Execute("Bloxstrike");
-end);
-
-Window:addButton("TTK-TESTING", function()
-	Execute("TTK-TESTING");
-end);
-
-Window:notify(
-	"Loader",
-	"Select a game to inject.",
-	nil,
-	false
-);
+Window:notify("Loader", "Select a game to inject.", nil, false);
