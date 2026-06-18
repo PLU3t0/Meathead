@@ -81,7 +81,7 @@ local PLACE_IDS = {
 };
 
 local SCRIPT_URLS = {
-	["AstroOp1"]       = https://raw.githubusercontent.com/PLU3t0/Meathead/main/OperationOne-main/loader.lua";
+	["AstroOp1"]       = "https://raw.githubusercontent.com/PLU3t0/Meathead/main/OperationOne-main/loader.lua";
 	["OperationOnev2"] = "https://raw.githubusercontent.com/PLU3t0/Meathead/main/OperationOne-main/v2.lua";
 	["Bloxstrike"]     = "https://raw.githubusercontent.com/PLU3t0/Meathead/main/Bloxstrike/loader.lua";
 	["TTK-TESTING"]    = "https://raw.githubusercontent.com/PLU3t0/Meathead/main/Ttk/ttk.luau";
