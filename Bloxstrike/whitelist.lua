@@ -9,5 +9,5 @@ return {
   "Solara",
   "Delta",
   "MacSploit",
-  "Opiumware",
+  "OpiumwareMac",
 };
