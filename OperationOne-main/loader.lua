@@ -1,3 +1,4 @@
+--fuckass #actors
 run_on_actor(getactors()[1], [[
 warn("fuck actors")
 ]])
