@@ -1,7 +1,4 @@
 --fuckass #actors
-run_on_actor(getactors()[1], [[
-warn("fuck actors")
-]])
 local repo              = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/";
 local Library           = loadstring(game:HttpGet(repo .. "Library.lua"))();
 
