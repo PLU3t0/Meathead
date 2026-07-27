@@ -10,4 +10,6 @@ return {
   "Delta",
   "MacSploit",
   "OpiumwareMac",
+  "Real",
+  "Velocity",
 };
