@@ -1,2 +1,0 @@
--- crd to YENO for the AC bypass. as long the AC not patch this will work.
---PATCHED 
